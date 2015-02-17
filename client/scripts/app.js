@@ -18,7 +18,9 @@ $(document).ready(function(){
       app.addMessage(msg);
     });
     $('.add-room-button').on('click', function(){
-      app.addRoom();
+      var room = $('.add-room-input').val();
+
+      app.addRoom(room);
     });
 
   };
@@ -26,12 +28,23 @@ $(document).ready(function(){
   app.addMessage = function(message) {
     // will eventually need to really add it
     // including room name
+    var msgObj = {
+      'username': 'Steve Jobs',
+      'text': message,
+      'roomname': 'appleworks'
+     };
+    app.send(msgObj);
 
-    console.log( message );
+    var newChat = $('<div class="chat"></div>').text(msgObj.username + ': ' + message);
+
+    $('#chats').prepend(newChat);
   };
 
-  app.addRoom = function(){
-    $('.add-room-input').val();
+  app.addRoom = function(room){
+    var $roomOption = $('<option></option>')
+    $roomOption.text(room).attr('value', room);
+
+    $('#roomSelect').append($roomOption);
   };
 
   app.send = function(message){
@@ -53,6 +66,7 @@ $(document).ready(function(){
   };
 
   app.fetch = function(){
+    // &where={"results":{"roomname":"lobby"}}
     $.ajax({
       // always use this url
       url: app.server+'?order=-createdAt',
@@ -80,14 +94,10 @@ $(document).ready(function(){
         if ( app.rooms.indexOf(room) === -1 && room ) {
           app.rooms.push(room);
 
-          console.log('room: ' + room);
-          console.log('ROOMS: ' + app.rooms);
-
-          $('.room-selection').empty();
+          $('#roomSelect').empty();
 
           for ( var j = 0; j < app.rooms.length; j++ ) {
-            var roomName = '<option value="' + app.rooms[j] + '">'+ app.rooms[j] + '</option>';
-            $('.room-selection').append(roomName);
+            app.addRoom(app.rooms[j]);
           }
         }
 
