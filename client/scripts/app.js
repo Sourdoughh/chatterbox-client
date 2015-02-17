@@ -1,13 +1,14 @@
 var app = {
-  room: [],
+  rooms: [],
   server: 'https://api.parse.com/1/classes/chatterbox'
 };
 
 $(document).ready(function(){
 
   app.init = function(){
-    app.fetch();
-
+    setInterval(function(){
+      app.fetch();
+    },1000)
     // listeners
     $('.clear-button').on('click', function(){
       app.clearMessages();
@@ -54,7 +55,7 @@ $(document).ready(function(){
   app.fetch = function(){
     $.ajax({
       // always use this url
-      url: app.server,
+      url: app.server+'?order=-createdAt',
       type: 'GET',
       success: function(data){app.constructChats(data)},
       error: function () {
@@ -70,12 +71,25 @@ $(document).ready(function(){
 
         var username = data.results[i].username;
         var text = data.results[i].text;
-        var rooms = data.results[i].rooms;
-        var $chat = $('<div class="chat"></div>').text(username + ': ' + text);
+        var room = data.results[i].roomname;
+        var timeStamp = data.results[i].createdAt;
+        var $chat = $('<div class="chat"></div>').text(username + ': ' + text + ' ' + timeStamp);
 
         $('#chats').append($chat);
 
+        if ( app.rooms.indexOf(room) === -1 && room ) {
+          app.rooms.push(room);
 
+          console.log('room: ' + room);
+          console.log('ROOMS: ' + app.rooms);
+
+          $('.room-selection').empty();
+
+          for ( var j = 0; j < app.rooms.length; j++ ) {
+            var roomName = '<option value="' + app.rooms[j] + '">'+ app.rooms[j] + '</option>';
+            $('.room-selection').append(roomName);
+          }
+        }
 
       }
     }
