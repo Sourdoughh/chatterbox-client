@@ -7,8 +7,9 @@ $(document).ready(function(){
 
   app.init = function(){
     setInterval(function(){
+      app.clearMessages();
       app.fetch();
-    },1000)
+    },5000);
     // listeners
     $('.clear-button').on('click', function(){
       app.clearMessages();
@@ -41,7 +42,7 @@ $(document).ready(function(){
   };
 
   app.addRoom = function(room){
-    var $roomOption = $('<option></option>')
+    var $roomOption = $('<option></option>');
     $roomOption.text(room).attr('value', room);
 
     $('#roomSelect').append($roomOption);
@@ -109,28 +110,34 @@ $(document).ready(function(){
     $('#chats').empty();
   };
 
+  // select username fn?
+  // where is the username coming from?
+  // add a clickable username...
+
+  app.addFriend = function(){
+
+  };
+
+  app.handleSubmit = function(){
+
+  };
+
+app.fetch();
 app.init();
 
 
 /*
-- display messages (GET)
-- refresh view
-- escape input
+- start with messages on screen vs waiting 5 seconds
+
 - select username
-- send messages (POST)
 
 - sub select by room? (display only in-room msgs)
+  ??? HOW do we use REST to filter our GET request results
+      by room?
+  ??? HOW do we add multiple filters onto our URL (like
+      using ampersands to add on encodes)
+
 - keep track of friends
-
-functions
----------
-* parse GET
-* add things to DOM
-
-* parse form input for POST
-* security/escaping fn
-* username handling?
-* refresh handling
 
  */
 });
