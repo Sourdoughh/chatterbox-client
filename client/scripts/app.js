@@ -127,6 +127,9 @@ app.init();
 
 
 /*
+- could store first chat element we prepend, and use
+  that unique id to inform our next GET request?
+
 - start with messages on screen vs waiting 5 seconds
 
 - select username
