@@ -1,36 +1,36 @@
-var app = {};
+var app = {
+  room: [],
+  server: 'https://api.parse.com/1/classes/chatterbox'
+};
 
 $(document).ready(function(){
 
-  app.server = 'https://api.parse.com/1/classes/chatterbox';
-
   app.init = function(){
-    //not sure what this will do
+    app.fetch();
+
+    // listeners
+    $('.clear-button').on('click', function(){
+      app.clearMessages();
+    });
+    $('.add-message-button').on('click', function(){
+      var msg = $('.add-message-input').val();
+      app.addMessage(msg);
+    });
+    $('.add-room-button').on('click', function(){
+      app.addRoom();
+    });
+
   };
 
-  app.postToBoard = function(data){
-    for(var i = 0; i < data.results.length; i++){
-      // if no username/undefined, then what?
-      if ( data.results[i].username !== undefined ||
-           data.results[i].text !== undefined ) {
+  app.addMessage = function(message) {
+    // will eventually need to really add it
+    // including room name
 
-        // also, escape
-        var username = data.results[i].username;
-        console.log('this is the username: ',username)
+    console.log( message );
+  };
 
-        // if no text, then what?
-        // escape
-        var text = data.results[i].text;
-        // console.log("This is the text: ", text);
-
-        // var chat = '<div>' + username + ': '+ text + '</div>';
-        var $chat = $('<div class="chat"></div>').text(username + ': ' + text);
-
-
-        $('.chatterbox').append($chat);
-      }
-
-    }
+  app.addRoom = function(){
+    $('.add-room-input').val();
   };
 
   app.send = function(message){
@@ -56,16 +56,36 @@ $(document).ready(function(){
       // always use this url
       url: app.server,
       type: 'GET',
-      success: function(data){app.postToBoard(data)},
+      success: function(data){app.constructChats(data)},
       error: function () {
         console.error('chatterbox: Failed to get messages');
       }
     });
   };
-    app.fetch();
+
+  app.constructChats = function(data){
+    for(var i = 0; i < data.results.length; i++){
+      if ( data.results[i].username !== undefined ||
+           data.results[i].text !== undefined ) {
+
+        var username = data.results[i].username;
+        var text = data.results[i].text;
+        var rooms = data.results[i].rooms;
+        var $chat = $('<div class="chat"></div>').text(username + ': ' + text);
+
+        $('#chats').append($chat);
 
 
 
+      }
+    }
+  };
+
+  app.clearMessages = function() {
+    $('#chats').empty();
+  };
+
+app.init();
 
 
 /*
